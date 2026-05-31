@@ -1,0 +1,2608 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arquitetura da Sobrevivência · Irene Almeida · Tradutora de Valor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,700&family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════
+   DESIGN TOKENS — ARQUITETURA DA SOBREVIVÊNCIA
+══════════════════════════════════════════════════ */
+:root {
+  /* Paleta Principal */
+  --warm-white: #F6F1EA;
+  --paper: #EDE6D6;
+  --paper-deep: #E0D5C0;
+  --paper-shadow: #D4C9B0;
+
+  --terra: #C96A2B;
+  --terra-glow: #E07830;
+  --terra-deep: #A05520;
+  --terra-pale: rgba(201,106,43,0.12);
+  --terra-blush: rgba(201,106,43,0.06);
+
+  --deep-blue: #2D4156;
+  --blue-mid: #3A5570;
+  --blue-pale: #6B8FAA;
+  --blue-ghost: rgba(45,65,86,0.07);
+  --blue-ink: #1E2E3D;
+
+  --bordeaux: #7B3E42;
+  --bordeaux-mid: #6A3338;
+  --bordeaux-pale: rgba(123,62,66,0.15);
+  --bordeaux-ghost: rgba(123,62,66,0.06);
+
+  --ink: #1C1A17;
+  --ink-mid: #38342C;
+  --ink-soft: #7A7062;
+  --ink-ghost: rgba(28,26,23,0.06);
+
+  --wood: #9E7A52;
+  --wood-light: #C4A07A;
+  --gold: #B08040;
+  --gold-pale: rgba(176,128,64,0.2);
+
+  /* Linhas e divisórias */
+  --line: rgba(45,65,86,0.12);
+  --line-warm: rgba(160,120,80,0.25);
+  --line-terra: rgba(201,106,43,0.3);
+  --line-dark: rgba(45,65,86,0.4);
+
+  /* Sombras dramáticas */
+  --shadow-xs: 0 1px 4px rgba(28,26,23,0.07);
+  --shadow-sm: 0 3px 16px rgba(28,26,23,0.10);
+  --shadow-md: 0 8px 36px rgba(28,26,23,0.15);
+  --shadow-lg: 0 20px 72px rgba(28,26,23,0.22);
+  --shadow-xl: 0 32px 100px rgba(28,26,23,0.28);
+  --shadow-terra: 0 8px 32px rgba(201,106,43,0.28);
+  --shadow-terra-lg: 0 16px 56px rgba(201,106,43,0.38);
+  --shadow-blue: 0 8px 32px rgba(45,65,86,0.32);
+}
+
+/* ══════════════════════════════════════════════════
+   RESET + BASE
+══════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Lato', sans-serif;
+  background: var(--warm-white);
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── TEXTURA DE PAPEL — camada global ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)' opacity='0.038'/%3E%3C/svg%3E");
+  background-size: 400px 400px;
+}
+
+/* ── GRID BLUEPRINT — muito sutil ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(45,65,86,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(45,65,86,0.025) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* ══════════════════════════════════════════════════
+   BARRA DE PROGRESSO — Planta Arquitetônica
+══════════════════════════════════════════════════ */
+.nav-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 300;
+  background: rgba(246,241,234,0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line-warm);
+  box-shadow: 0 2px 20px rgba(28,26,23,0.08);
+}
+
+.nav-inner {
+  max-width: 740px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  height: 60px;
+  padding: 0 20px;
+  gap: 20px;
+}
+
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--deep-blue);
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.nav-logo::before {
+  content: '';
+  display: block;
+  width: 6px; height: 6px;
+  background: var(--terra);
+  transform: rotate(45deg);
+}
+.nav-logo span { color: var(--terra); }
+
+/* Planta da casa — barra de progresso */
+.house-plan {
+  flex: 1;
+  position: relative;
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.hp-track {
+  position: absolute;
+  top: 50%; left: 0; right: 0;
+  height: 1.5px;
+  background: var(--line-warm);
+  transform: translateY(-50%);
+}
+
+.hp-fill {
+  position: absolute;
+  top: 50%; left: 0;
+  height: 2.5px;
+  background: linear-gradient(90deg, var(--terra), var(--terra-glow));
+  transform: translateY(-50%);
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 2px;
+  box-shadow: 0 0 12px rgba(201,106,43,0.5), 0 0 4px rgba(201,106,43,0.8);
+  width: 0%;
+}
+
+.hp-rooms {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hp-room {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: default;
+}
+
+.hp-node {
+  width: 11px; height: 11px;
+  border: 2px solid var(--blue-pale);
+  background: var(--warm-white);
+  transform: rotate(45deg);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.hp-room.done .hp-node {
+  background: var(--deep-blue);
+  border-color: var(--deep-blue);
+}
+
+.hp-room.active .hp-node {
+  background: var(--terra);
+  border-color: var(--terra);
+  box-shadow: 0 0 0 5px rgba(201,106,43,0.18);
+  transform: rotate(45deg) scale(1.2);
+}
+
+.hp-label {
+  font-size: 6.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-family: 'Lato', sans-serif;
+  color: var(--ink-soft);
+  opacity: 0;
+  transition: opacity 0.3s;
+  white-space: nowrap;
+}
+.hp-room.active .hp-label { opacity: 1; color: var(--terra); font-weight: 700; }
+
+/* ══════════════════════════════════════════════════
+   SCREENS
+══════════════════════════════════════════════════ */
+.screen {
+  display: none;
+  min-height: 100vh;
+  padding-top: 60px;
+  position: relative;
+  z-index: 1;
+}
+.screen.active { display: block; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.screen.active { animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ══════════════════════════════════════════════════
+   TIPOGRAFIA — HIERARQUIA FORTE
+══════════════════════════════════════════════════ */
+
+/* Overline — traço + texto */
+.t-overline {
+  font-family: 'Lato', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--terra);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.t-overline::before {
+  content: '';
+  display: block;
+  width: 36px; height: 1.5px;
+  background: currentColor;
+}
+
+/* Headline — impacto máximo */
+.t-headline {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(36px, 10vw, 62px);
+  line-height: 1.0;
+  color: var(--deep-blue);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: 10px;
+}
+.t-headline em {
+  color: var(--terra);
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* Subhead */
+.t-subhead {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(22px, 6vw, 34px);
+  line-height: 1.2;
+  color: var(--deep-blue);
+  font-weight: 600;
+  margin-top: 10px;
+}
+.t-subhead em { color: var(--terra); font-style: italic; font-weight: 400; }
+
+/* Editorial — Cormorant, elegante */
+.t-editorial {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(18px, 4.5vw, 24px);
+  line-height: 1.85;
+  color: var(--ink-mid);
+  font-weight: 300;
+}
+.t-editorial strong { font-weight: 600; color: var(--deep-blue); font-style: normal; }
+
+/* Body */
+.t-body {
+  font-family: 'Lato', sans-serif;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--ink-mid);
+  font-weight: 300;
+}
+
+/* Poem / citação */
+.t-poem {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(17px, 4.5vw, 22px);
+  line-height: 2.0;
+  color: var(--ink-mid);
+  font-style: italic;
+  font-weight: 300;
+}
+.t-poem strong { font-style: normal; font-weight: 700; color: var(--terra); }
+
+/* ══════════════════════════════════════════════════
+   LAYOUT HELPERS
+══════════════════════════════════════════════════ */
+.gap-xs { height: 10px; }
+.gap-sm { height: 20px; }
+.gap    { height: 36px; }
+.gap-lg { height: 64px; }
+
+/* ══════════════════════════════════════════════════
+   HERO ABERTURA — cinematic, imponente
+══════════════════════════════════════════════════ */
+.hero-band {
+  background: var(--blue-ink);
+  padding: 72px 24px 64px;
+  position: relative;
+  overflow: hidden;
+  min-height: 360px;
+  display: flex;
+  align-items: center;
+}
+
+/* Luz dramática no canto */
+.hero-band::before {
+  content: '';
+  position: absolute;
+  top: -80px; left: -80px;
+  width: 500px; height: 500px;
+  background: radial-gradient(ellipse, rgba(201,106,43,0.22) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+/* Grid blueprint no hero */
+.hero-band::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+/* Linha vertical arquitetônica */
+.hero-arch-line {
+  position: absolute;
+  top: 0; bottom: 0;
+  right: 120px;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(201,106,43,0.3), transparent);
+  pointer-events: none;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  max-width: 700px;
+  width: 100%;
+}
+
+.hero-eyebrow {
+  font-family: 'Lato', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(201,106,43,0.85);
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-weight: 700;
+}
+.hero-eyebrow::before {
+  content: '';
+  width: 40px; height: 1px;
+  background: rgba(201,106,43,0.5);
+}
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(38px, 10vw, 68px);
+  line-height: 1.0;
+  color: var(--warm-white);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.hero-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--terra-glow);
+  display: block;
+}
+.hero-title .hero-exp {
+  font-size: clamp(18px, 4.5vw, 28px);
+  font-weight: 300;
+  color: rgba(246,241,234,0.5);
+  font-family: 'Cormorant Garamond', serif;
+  letter-spacing: 0.08em;
+  font-style: normal;
+  display: block;
+  margin-top: 4px;
+}
+
+.hero-rule {
+  margin: 36px 0;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.hero-rule-line { flex: 1; height: 1px; background: rgba(255,255,255,0.10); }
+.hero-rule-cross {
+  width: 12px; height: 12px;
+  position: relative;
+  flex-shrink: 0;
+}
+.hero-rule-cross::before,
+.hero-rule-cross::after {
+  content: '';
+  position: absolute;
+  background: var(--terra);
+  border-radius: 1px;
+}
+.hero-rule-cross::before { width: 12px; height: 1.5px; top: 50%; left: 0; transform: translateY(-50%); }
+.hero-rule-cross::after  { width: 1.5px; height: 12px; left: 50%; top: 0; transform: translateX(-50%); }
+
+.hero-sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(16px, 4vw, 21px);
+  color: rgba(246,241,234,0.65);
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.7;
+  max-width: 480px;
+}
+
+/* Número de projeto no canto */
+.hero-proj-num {
+  position: absolute;
+  bottom: 28px; right: 28px;
+  font-family: 'Playfair Display', serif;
+  font-size: 80px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.025);
+  line-height: 1;
+  pointer-events: none;
+  z-index: 1;
+  letter-spacing: -0.04em;
+}
+
+/* ══════════════════════════════════════════════════
+   PRANCHA — Card como Pranchas de Projeto
+══════════════════════════════════════════════════ */
+.prancha {
+  background: #FFFFFF;
+  border: 1px solid var(--line-warm);
+  border-radius: 2px;
+  padding: 32px 28px;
+  margin: 24px 0;
+  position: relative;
+  box-shadow: var(--shadow-md);
+  transition: box-shadow 0.4s ease, transform 0.4s ease;
+  overflow: hidden;
+}
+
+/* Barra de acento superior */
+.prancha::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--terra) 0%, var(--terra-glow) 60%, transparent 100%);
+}
+
+/* Marca de projeto — canto inferior */
+.prancha::after {
+  content: '';
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 60px; height: 60px;
+  border-top: 1px solid var(--line-warm);
+  border-left: 1px solid var(--line-warm);
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.prancha:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-3px);
+}
+
+.prancha-num {
+  position: absolute;
+  top: 18px; right: 22px;
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  font-weight: 700;
+  color: rgba(45,65,86,0.055);
+  line-height: 1;
+  font-style: italic;
+  pointer-events: none;
+  letter-spacing: -0.04em;
+}
+
+/* Prancha escura */
+.prancha-dark {
+  background: var(--deep-blue);
+  border-color: rgba(255,255,255,0.06);
+}
+.prancha-dark::before {
+  background: linear-gradient(90deg, var(--terra-glow), var(--bordeaux-mid));
+}
+.prancha-dark::after { border-color: rgba(255,255,255,0.06); }
+.prancha-dark .t-editorial { color: rgba(246,241,234,0.9); }
+.prancha-dark .t-poem { color: rgba(246,241,234,0.78); }
+.prancha-dark .t-body { color: rgba(246,241,234,0.72); }
+.prancha-dark .prancha-num { color: rgba(255,255,255,0.04); }
+
+/* Prancha terracota */
+.prancha-terra {
+  background: linear-gradient(140deg, #C96A2B 0%, #A05420 100%);
+  border: none;
+  box-shadow: var(--shadow-terra);
+}
+.prancha-terra::before { display: none; }
+.prancha-terra::after { border-color: rgba(255,255,255,0.1); }
+.prancha-terra .t-editorial { color: rgba(246,241,234,0.96); }
+.prancha-terra .t-poem { color: rgba(246,241,234,0.88); }
+.prancha-terra .t-body { color: rgba(246,241,234,0.82); }
+
+/* Prancha acento lateral */
+.prancha-accent {
+  border-left: 5px solid var(--terra);
+  padding-left: 26px;
+  background: var(--terra-blush);
+  box-shadow: var(--shadow-sm);
+}
+.prancha-accent::before { display: none; }
+
+/* Prancha bordeaux */
+.prancha-bordeaux {
+  background: var(--bordeaux-mid);
+  border-color: transparent;
+}
+.prancha-bordeaux::before {
+  background: linear-gradient(90deg, rgba(201,106,43,0.8), var(--bordeaux));
+}
+.prancha-bordeaux .t-editorial { color: rgba(246,241,234,0.94); }
+.prancha-bordeaux .t-poem { color: rgba(246,241,234,0.8); }
+
+/* ══════════════════════════════════════════════════
+   DIVISORES ARQUITETÔNICOS
+══════════════════════════════════════════════════ */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 40px 0;
+}
+.div-line { flex: 1; height: 1px; background: var(--line-warm); }
+.div-ornament {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  color: var(--terra);
+  line-height: 1;
+  transform: rotate(45deg);
+  display: block;
+  flex-shrink: 0;
+}
+
+.divider-arch {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 40px 0;
+  position: relative;
+}
+.divider-arch::before {
+  content: '';
+  display: block;
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--line-warm));
+}
+.divider-arch::after {
+  content: '';
+  display: block;
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to left, transparent, var(--line-warm));
+}
+.div-arch-center {
+  padding: 0 20px;
+  font-family: 'Lato', sans-serif;
+  font-size: 7px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--wood);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ══════════════════════════════════════════════════
+   PAUSA — bloco contemplativo
+══════════════════════════════════════════════════ */
+.pausa {
+  background: var(--deep-blue);
+  border-radius: 2px;
+  padding: 44px 36px;
+  margin: 36px 0;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  box-shadow: var(--shadow-blue);
+}
+.pausa::before {
+  content: '';
+  position: absolute;
+  bottom: -50px; right: -50px;
+  width: 280px; height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,106,43,0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+.pausa::after {
+  content: '';
+  position: absolute;
+  top: -30px; left: -30px;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(246,241,234,0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+.pausa .t-editorial { color: rgba(246,241,234,0.96); position: relative; z-index: 1; font-size: clamp(18px, 5vw, 26px); }
+
+/* ══════════════════════════════════════════════════
+   QUOTE BLOCK
+══════════════════════════════════════════════════ */
+.quote-block {
+  border-left: 4px solid var(--terra);
+  padding: 20px 24px;
+  background: rgba(201,106,43,0.06);
+  margin: 24px 0;
+  position: relative;
+}
+.quote-block::before {
+  content: '❞';
+  position: absolute;
+  top: 12px; left: 28px;
+  font-size: 48px;
+  color: var(--terra);
+  opacity: 0.12;
+  line-height: 1;
+  font-family: Georgia, serif;
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════════════════
+   CHECKBOXES — seleção de estruturas
+══════════════════════════════════════════════════ */
+.check-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 24px 0;
+}
+
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: white;
+  border: 1px solid var(--line-warm);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.28s ease;
+  font-family: 'Lato', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ink-mid);
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  box-shadow: var(--shadow-xs);
+}
+
+.check-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--terra) 0%, var(--terra-deep) 100%);
+  opacity: 0;
+  transition: opacity 0.28s;
+}
+
+.check-item:hover {
+  border-color: var(--terra);
+  box-shadow: var(--shadow-sm), 0 0 0 2px rgba(201,106,43,0.12);
+  transform: translateY(-1px);
+}
+
+.check-item.selected {
+  color: white;
+  border-color: var(--terra-deep);
+  box-shadow: var(--shadow-terra);
+  transform: translateY(-2px);
+}
+.check-item.selected::before { opacity: 1; }
+.check-item.selected .cb,
+.check-item.selected span { position: relative; z-index: 1; }
+
+.cb {
+  width: 19px; height: 19px;
+  border-radius: 2px;
+  border: 1.5px solid var(--blue-pale);
+  background: transparent;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  position: relative;
+  z-index: 1;
+}
+.check-item.selected .cb {
+  background: rgba(255,255,255,0.22);
+  border-color: rgba(255,255,255,0.5);
+}
+.check-item.selected .cb::after {
+  content: '✓';
+  font-size: 12px;
+  color: white;
+  font-weight: 700;
+}
+.check-item span { position: relative; z-index: 1; }
+
+/* ══════════════════════════════════════════════════
+   INSIGHT — revelação dinâmica
+══════════════════════════════════════════════════ */
+.insight {
+  display: none;
+  background: var(--bordeaux-mid);
+  padding: 28px 28px 28px 56px;
+  margin: 20px 0;
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+.insight::before {
+  content: '✦';
+  position: absolute;
+  top: 24px; left: 20px;
+  color: rgba(255,255,255,0.25);
+  font-size: 22px;
+}
+.insight::after {
+  content: '';
+  position: absolute;
+  bottom: -20px; right: -20px;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,106,43,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.insight.show { display: block; animation: fadeUp 0.5s ease; }
+.insight .t-editorial {
+  color: rgba(246,241,234,0.96);
+  font-size: clamp(16px, 4vw, 20px);
+}
+
+/* ══════════════════════════════════════════════════
+   JOURNAL — caderno de briefing
+══════════════════════════════════════════════════ */
+.journal-wrap {
+  margin: 28px 0;
+  position: relative;
+}
+
+.j-label {
+  font-family: 'Lato', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--terra);
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.j-label::before {
+  content: '';
+  display: block;
+  width: 24px; height: 1.5px;
+  background: currentColor;
+}
+
+.j-prompt {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(17px, 4.5vw, 21px);
+  font-style: italic;
+  color: var(--ink-mid);
+  margin-bottom: 14px;
+  line-height: 1.65;
+}
+
+textarea.j-input {
+  width: 100%;
+  min-height: 120px;
+  background: white;
+  border: 1px solid var(--line-warm);
+  border-bottom: 3px solid var(--terra);
+  border-radius: 2px;
+  padding: 18px 18px 18px 44px;
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--ink);
+  line-height: 1.85;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-shadow: var(--shadow-xs);
+  /* Linhas de caderno */
+  background-image:
+    repeating-linear-gradient(
+      transparent, transparent 29px,
+      rgba(45,65,86,0.07) 29px, rgba(45,65,86,0.07) 30px
+    ),
+    linear-gradient(to right, rgba(201,106,43,0.12) 36px, transparent 36px);
+  background-position: 0 38px, 0 0;
+}
+textarea.j-input:focus {
+  border-color: var(--terra);
+  box-shadow: 0 0 0 4px rgba(201,106,43,0.10), var(--shadow-sm);
+}
+
+/* ══════════════════════════════════════════════════
+   BOTÕES — editorial premium
+══════════════════════════════════════════════════ */
+.btn-main {
+  display: block;
+  width: 100%;
+  padding: 20px 32px;
+  background: linear-gradient(135deg, var(--terra) 0%, var(--terra-deep) 100%);
+  color: var(--warm-white);
+  border: none;
+  border-radius: 2px;
+  font-family: 'Lato', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-weight: 700;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-terra);
+  margin-top: 28px;
+}
+
+.btn-main::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.btn-main::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: rgba(255,255,255,0.2);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.btn-main:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-terra-lg);
+}
+.btn-main:hover::before { opacity: 1; }
+.btn-main:hover::after { transform: scaleX(1); }
+.btn-main:active { transform: translateY(-1px); }
+
+.btn-blue {
+  background: linear-gradient(135deg, var(--deep-blue) 0%, var(--blue-ink) 100%);
+  box-shadow: var(--shadow-blue);
+}
+.btn-blue:hover { box-shadow: 0 20px 60px rgba(45,65,86,0.42); }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 22px;
+  background: transparent;
+  color: var(--ink-soft);
+  border: 1.5px solid var(--line-warm);
+  border-radius: 2px;
+  font-family: 'Lato', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.28s ease;
+  margin-top: 14px;
+}
+.btn-ghost:hover {
+  border-color: var(--deep-blue);
+  color: var(--deep-blue);
+  background: rgba(45,65,86,0.05);
+  transform: translateX(-2px);
+}
+
+.btn-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.btn-row .btn-main { margin-top: 0; flex: 1; }
+
+/* ══════════════════════════════════════════════════
+   SECTION LABEL — marcador de módulo
+══════════════════════════════════════════════════ */
+.sec-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Lato', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--blue-pale);
+  margin-bottom: 28px;
+  font-weight: 700;
+  padding-top: 32px;
+}
+.sec-label::before {
+  content: '';
+  display: block;
+  width: 36px; height: 1.5px;
+  background: currentColor;
+}
+.sec-label::after {
+  content: '';
+  flex: 1; height: 1px;
+  background: var(--line);
+}
+
+/* ══════════════════════════════════════════════════
+   ARMADURA DA SOBREVIVENTE — forjada, imponente
+══════════════════════════════════════════════════ */
+.armor-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 28px 0;
+}
+
+.armor-piece {
+  background: white;
+  border: 1px solid var(--line-warm);
+  border-radius: 2px;
+  padding: 22px 18px 18px;
+  cursor: pointer;
+  transition: all 0.35s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-xs);
+}
+
+/* Linha superior da peça */
+.armor-piece::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--line-warm);
+  transition: background 0.3s, height 0.3s;
+}
+
+/* Gravura de canto */
+.armor-piece::after {
+  content: '';
+  position: absolute;
+  bottom: 8px; right: 8px;
+  width: 28px; height: 28px;
+  border-top: 1px solid rgba(45,65,86,0.12);
+  border-left: 1px solid rgba(45,65,86,0.12);
+  pointer-events: none;
+  transition: all 0.3s;
+}
+
+.armor-piece:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+  border-color: rgba(201,106,43,0.3);
+}
+.armor-piece:hover::before {
+  background: var(--terra);
+  height: 4px;
+}
+
+.armor-piece.selected {
+  background: linear-gradient(160deg, var(--deep-blue) 0%, var(--blue-ink) 100%);
+  border-color: var(--deep-blue);
+  box-shadow: var(--shadow-blue), var(--shadow-lg);
+  transform: translateY(-4px);
+}
+.armor-piece.selected::before {
+  background: linear-gradient(90deg, var(--terra-glow), var(--bordeaux));
+  height: 4px;
+}
+.armor-piece.selected::after {
+  border-color: rgba(255,255,255,0.08);
+}
+
+/* Ícone gravado */
+.armor-icon-wrap {
+  width: 44px; height: 44px;
+  background: rgba(45,65,86,0.06);
+  border: 1px solid var(--line-warm);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-bottom: 14px;
+  transition: all 0.3s;
+  position: relative;
+}
+.armor-icon-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.5), transparent);
+  opacity: 0.3;
+}
+.armor-piece.selected .armor-icon-wrap {
+  background: rgba(201,106,43,0.18);
+  border-color: rgba(201,106,43,0.3);
+}
+
+/* Nome da peça */
+.armor-piece-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--deep-blue);
+  margin-bottom: 8px;
+  line-height: 1.25;
+  transition: color 0.3s;
+}
+.armor-piece.selected .armor-piece-name { color: #F6F1EA; }
+
+.armor-piece-teaser {
+  font-family: 'Lato', sans-serif;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  transition: color 0.3s;
+  font-weight: 300;
+}
+.armor-piece.selected .armor-piece-teaser { color: rgba(246,241,234,0.58); }
+
+.armor-expand {
+  display: none;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+.armor-piece.selected .armor-expand { display: block; }
+
+.armor-reflection {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14.5px;
+  font-style: italic;
+  color: rgba(201,106,43,0.92);
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+/* ══════════════════════════════════════════════════
+   MAPA CORPORAL — silhueta editorial anatômica
+══════════════════════════════════════════════════ */
+.body-map-wrap {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  margin: 28px 0;
+}
+
+.body-figure {
+  flex-shrink: 0;
+  width: 100px;
+  position: relative;
+}
+.body-figure svg { width: 100%; filter: drop-shadow(0 4px 12px rgba(45,65,86,0.12)); }
+
+.body-list { flex: 1; display: flex; flex-direction: column; gap: 7px; }
+
+.body-region {
+  background: white;
+  border: 1px solid var(--line-warm);
+  border-radius: 2px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: all 0.28s ease;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  box-shadow: var(--shadow-xs);
+}
+.body-region::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: var(--terra);
+  transform: scaleY(0);
+  transform-origin: center;
+  transition: transform 0.28s ease;
+}
+.body-region:hover { box-shadow: var(--shadow-sm); transform: translateX(2px); }
+.body-region:hover::before { transform: scaleY(1); }
+
+.body-region.active {
+  background: var(--deep-blue);
+  border-color: var(--deep-blue);
+  box-shadow: var(--shadow-blue);
+}
+.body-region.active::before { transform: scaleY(1); background: var(--terra-glow); }
+
+.br-header { display: flex; align-items: center; gap: 12px; }
+
+.br-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 1.5px solid var(--blue-pale);
+  flex-shrink: 0;
+  transition: all 0.28s;
+}
+.body-region.active .br-dot {
+  background: var(--terra-glow);
+  border-color: var(--terra-glow);
+  box-shadow: 0 0 0 4px rgba(201,106,43,0.2);
+}
+
+.br-name {
+  font-family: 'Lato', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-mid);
+  transition: color 0.28s;
+  letter-spacing: 0.02em;
+}
+.body-region.active .br-name { color: #F6F1EA; }
+
+.br-detail {
+  display: none;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  font-style: italic;
+  color: rgba(246,241,234,0.75);
+  line-height: 1.7;
+}
+.body-region.active .br-detail { display: block; }
+
+.body-figure .region-fill {
+  fill: transparent;
+  cursor: pointer;
+  transition: fill 0.3s;
+}
+.body-figure .region-fill:hover { fill: rgba(201,106,43,0.18); }
+.body-figure .region-fill.lit { fill: rgba(201,106,43,0.28); }
+
+/* ══════════════════════════════════════════════════
+   MESA INTERNA — layout arquitetônico
+══════════════════════════════════════════════════ */
+.mesa-scene {
+  margin: 28px 0;
+  background: white;
+  border: 1px solid var(--line-warm);
+  border-radius: 2px;
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+.mesa-scene::before {
+  content: 'PLANTA · MESA INTERNA';
+  position: absolute;
+  top: 16px; right: 18px;
+  font-family: 'Lato', sans-serif;
+  font-size: 7px;
+  letter-spacing: 0.24em;
+  color: var(--ink-soft);
+  opacity: 0.4;
+  font-weight: 700;
+}
+.mesa-scene::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(45,65,86,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(45,65,86,0.018) 1px, transparent 1px);
+  background-size: 36px 36px;
+  pointer-events: none;
+}
+
+.mesa-pool-label {
+  font-family: 'Lato', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 10px;
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
+}
+
+.mesa-pool {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding: 14px;
+  background: var(--warm-white);
+  border: 1.5px dashed rgba(160,120,80,0.3);
+  border-radius: 2px;
+  margin-bottom: 18px;
+  min-height: 60px;
+  position: relative;
+  z-index: 1;
+}
+
+.mesa-chip {
+  padding: 7px 14px;
+  background: white;
+  border: 1px solid var(--line-warm);
+  border-radius: 1px;
+  font-family: 'Lato', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ink-mid);
+  cursor: pointer;
+  transition: all 0.22s;
+  user-select: none;
+  white-space: nowrap;
+  box-shadow: var(--shadow-xs);
+}
+.mesa-chip:hover {
+  border-color: var(--terra);
+  color: var(--terra);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+.mesa-chip.used { opacity: 0.3; pointer-events: none; }
+
+.mesa-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.mesa-zone {
+  border: 1.5px dashed rgba(45,65,86,0.18);
+  border-radius: 2px;
+  padding: 12px;
+  min-height: 90px;
+  transition: background 0.2s;
+  background: rgba(246,241,234,0.5);
+}
+.mesa-zone.zone-center {
+  grid-column: 1 / -1;
+  background: rgba(45,65,86,0.04);
+  border-color: rgba(45,65,86,0.28);
+  border-style: solid;
+}
+
+.mz-label {
+  font-family: 'Lato', sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+.mesa-zone.zone-center .mz-label { color: var(--deep-blue); }
+
+.placed-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.placed-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 1px;
+  font-family: 'Lato', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+.placed-chip.c-center { background: var(--deep-blue); color: #F6F1EA; }
+.placed-chip.c-laterais { background: var(--blue-mid); color: #F6F1EA; opacity: 0.82; }
+.placed-chip.c-atras { background: var(--wood); color: #F6F1EA; opacity: 0.72; }
+.placed-chip.c-fora { background: var(--ink-soft); color: #F6F1EA; opacity: 0.62; }
+.placed-chip:hover { opacity: 0.55; }
+.placed-chip .remove { font-size: 9px; opacity: 0.6; }
+
+/* ══════════════════════════════════════════════════
+   TELA FINAL — jornada completa
+══════════════════════════════════════════════════ */
+.final-hero {
+  background: linear-gradient(160deg, var(--blue-ink) 0%, #0E1D2C 100%);
+  padding: 80px 24px 72px;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.final-hero::before {
+  content: '';
+  position: absolute;
+  top: -100px; left: 50%;
+  transform: translateX(-50%);
+  width: 700px; height: 700px;
+  background: radial-gradient(ellipse, rgba(201,106,43,0.15) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.final-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+
+.final-hero * { position: relative; z-index: 1; }
+
+.final-hero-eyebrow {
+  font-family: 'Lato', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(201,106,43,0.75);
+  font-weight: 700;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+.final-hero-eyebrow::before,
+.final-hero-eyebrow::after {
+  content: '';
+  display: block;
+  width: 40px; height: 1px;
+  background: rgba(201,106,43,0.3);
+}
+
+.final-hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(30px, 8vw, 52px);
+  color: var(--warm-white);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.final-hero-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--terra-glow);
+}
+
+.final-hero-sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(16px, 4.5vw, 22px);
+  color: rgba(246,241,234,0.55);
+  font-style: italic;
+  font-weight: 300;
+  margin-top: 16px;
+  line-height: 1.6;
+}
+
+.final-ornament {
+  margin: 36px auto;
+  width: 48px; height: 48px;
+  position: relative;
+}
+.final-ornament::before,
+.final-ornament::after {
+  content: '';
+  position: absolute;
+  background: rgba(201,106,43,0.5);
+}
+.final-ornament::before { width: 48px; height: 1px; top: 50%; left: 0; transform: translateY(-50%); }
+.final-ornament::after  { width: 1px; height: 48px; left: 50%; top: 0; transform: translateX(-50%); }
+.final-ornament-inner {
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(201,106,43,0.4);
+  transform: rotate(45deg);
+}
+
+/* Cards de sumário */
+.summary-card {
+  background: white;
+  border: 1px solid var(--line-warm);
+  border-radius: 2px;
+  padding: 24px 22px;
+  margin: 16px 0;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+.summary-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--terra), var(--terra-glow) 60%, transparent);
+}
+
+.sum-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Lato', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 14px;
+  font-weight: 700;
+}
+.sum-tag::before {
+  content: '';
+  display: block;
+  width: 22px; height: 1.5px;
+  background: currentColor;
+}
+
+.sum-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.sum-pill {
+  padding: 5px 14px;
+  background: var(--blue-ghost);
+  border: 1px solid rgba(45,65,86,0.1);
+  border-radius: 1px;
+  font-family: 'Lato', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--deep-blue);
+}
+
+.sum-quote {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(17px, 4.5vw, 22px);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--ink-mid);
+  line-height: 1.75;
+  border-left: 4px solid var(--terra);
+  padding: 4px 0 4px 18px;
+}
+
+/* ══════════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════════ */
+.footer {
+  text-align: center;
+  padding: 28px 20px 20px;
+  font-family: 'Lato', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--ink-soft);
+  border-top: 1px solid var(--line-warm);
+  margin-top: 56px;
+  line-height: 2;
+  font-weight: 300;
+}
+
+/* ══════════════════════════════════════════════════
+   ANIMAÇÕES & MICROINTERAÇÕES
+══════════════════════════════════════════════════ */
+@keyframes shimmer {
+  0% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.4; }
+}
+
+@keyframes pulse-terra {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201,106,43,0.3); }
+  50% { box-shadow: 0 0 0 8px rgba(201,106,43,0); }
+}
+
+/* ══════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════ */
+@media (max-width: 440px) {
+  .armor-grid { grid-template-columns: 1fr; }
+  .check-grid { grid-template-columns: 1fr; }
+  .body-map-wrap { flex-direction: column; }
+  .body-figure { width: 80px; align-self: center; }
+  .mesa-grid { grid-template-columns: 1fr; }
+  .mesa-zone.zone-center { grid-column: 1; }
+}
+
+@media (max-width: 360px) {
+  .hero-title { font-size: 32px; }
+  .btn-row { flex-direction: column; }
+  .btn-row .btn-ghost { width: 100%; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV BAR — PLANTA ARQUITETÔNICA ══════════════ -->
+<nav class="nav-bar" id="navBar">
+  <div class="nav-inner">
+    <div class="nav-logo">I.A · <span>T.V</span></div>
+    <div class="house-plan">
+      <div class="hp-track"></div>
+      <div class="hp-fill" id="hpFill"></div>
+      <div class="hp-rooms" id="hpRooms"></div>
+    </div>
+  </div>
+</nav>
+
+
+<!-- ════════════════════════════════════════════════
+     SCREEN 0 — ABERTURA
+════════════════════════════════════════════════ -->
+<div class="screen active" id="screen-0">
+
+  <div class="hero-band">
+    <div class="hero-arch-line"></div>
+    <div class="hero-proj-num">01</div>
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Irene Almeida · Tradutora de Valor · Experiência Interativa</div>
+      <h1 class="hero-title">
+        Arquitetura da
+        <em>Sobrevivência</em>
+        <span class="hero-exp">Experience</span>
+      </h1>
+      <div class="hero-rule">
+        <div class="hero-rule-line"></div>
+        <div class="hero-rule-cross"></div>
+        <div class="hero-rule-line"></div>
+      </div>
+      <p class="hero-sub">Da Estação da Espera Emocional<br>ao Se Escolher</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="gap"></div>
+
+    <div class="prancha">
+      <div class="prancha-num">I</div>
+      <p class="t-editorial">
+        Uma experiência interativa para mulheres que desejam identificar estruturas internas de sobrevivência, observar armaduras emocionais, reconhecer sinais do corpo e iniciar o movimento de <strong>se escolher</strong> com consciência, responsabilidade e compaixão.
+      </p>
+    </div>
+
+    <div class="prancha prancha-accent" style="margin-top:12px">
+      <p class="t-body">⏱ Duração estimada: <strong>45–60 minutos</strong><br>Prepare um lugar silencioso e acolhedor para você.</p>
+    </div>
+
+    <button class="btn-main" onclick="goTo(1)">começar a experiência →</button>
+    <div class="footer">© 2024 Irene Almeida · Tradutora de Valor · Todos os direitos reservados</div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     SCREEN 1 — BIO
+════════════════════════════════════════════════ -->
+<div class="screen" id="screen-1">
+  <div class="container">
+    <div class="sec-label">quem criou esta experiência</div>
+    <p class="t-overline">Criadora</p>
+    <h2 class="t-headline">Irene<br><em>Almeida</em></h2>
+    <div class="gap-sm"></div>
+
+    <div class="prancha">
+      <div class="prancha-num">II</div>
+      <p class="t-editorial" style="margin-bottom:18px">
+        Sou <strong>Tradutora de Valor</strong>, designer, terapeuta sistêmica em formação, comunicadora e criadora do <em>Design do Coração</em>.
+      </p>
+      <p class="t-body" style="margin-bottom:18px">
+        Crio experiências, conteúdos e ferramentas que ajudam mulheres a observar padrões, traduzir emoções, revisitar estruturas internas e construir caminhos mais íntegros entre identidade, propósito e realidade.
+      </p>
+      <div class="divider"><div class="div-line"></div><div class="div-ornament">◆</div><div class="div-line"></div></div>
+      <p class="t-poem">
+        Arquitetura da Sobrevivência Experience nasceu da minha palestra Arquitetura da Sobrevivência.<br><br>
+        Mas, mais do que isso…<br><br>
+        nasceu das salas internas que precisei aprender a visitar.
+      </p>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-ghost" onclick="goTo(0)">← retornar</button>
+      <button class="btn-main" onclick="goTo(2)">avançar pela casa →</button>
+    </div>
+    <div class="footer">© 2024 Irene Almeida · Tradutora de Valor · Todos os direitos reservados</div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     SCREEN 2 — AVISO / DIREITOS AUTORAIS
+════════════════════════════════════════════════ -->
+<div class="screen" id="screen-2">
+  <div class="container">
+    <div class="sec-label">antes de começar</div>
+    <p class="t-overline">Direitos Autorais</p>
+    <h2 class="t-subhead">Sobre este conteúdo</h2>
+    <div class="gap-sm"></div>
+
+    <div class="prancha prancha-dark">
+      <div class="prancha-num" style="color:rgba(255,255,255,0.05)">III</div>
+      <p class="t-editorial" style="margin-bottom:18px">
+        Este conteúdo é protegido por <strong style="color:#F6F1EA">direitos autorais</strong>.
+      </p>
+      <p class="t-body" style="margin-bottom:16px">
+        Seu acesso é individual e exclusivo para quem o adquiriu.
+      </p>
+      <p class="t-body">
+        Não é permitida reprodução, compartilhamento, distribuição, gravação, revenda, redistribuição parcial ou integral, disponibilização pública ou cópia deste material sem autorização expressa da autora.
+      </p>
+    </div>
+
+    <div class="quote-block">
+      <p class="t-editorial">Obrigada por honrar o tempo, a construção, a criatividade e a propriedade intelectual envolvidos nesta experiência.</p>
+    </div>
+
+    <button class="btn-main btn-blue" onclick="goTo(3)">compreendo e quero continuar →</button>
+    <div class="btn-row" style="margin-top:4px">
+      <button class="btn-ghost" onclick="goTo(1)">← retornar à sala anterior</button>
+    </div>
+    <div class="footer">© 2024 Irene Almeida · Tradutora de Valor · Todos os direitos reservados</div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     SCREEN 3 — MÓDULO 1: ESPERA EMOCIONAL
+════════════════════════════════════════════════ -->
+<div class="screen" id="screen-3">
+  <div class="container">
+    <div class="sec-label">módulo 01 · estação da espera emocional</div>
+    <p class="t-overline">Sala I</p>
+    <h2 class="t-headline">A Estação da<br><em>Espera</em></h2>
+    <div class="gap-sm"></div>
+
+    <div class="prancha">
+      <div class="prancha-num">01</div>
+      <p class="t-poem">
+        Durante muito tempo…<br><br>
+        talvez você não tenha chamado isso de espera.<br><br>
+        Porque espera emocional nem sempre parece alguém parada.<br><br>
+        Às vezes parece alguém extremamente <em>ocupada.</em><br>
+        <em>Comprometida. Produtiva. Espiritual. Disponível. Funcionando.</em>
+      </p>
+    </div>
+
+    <div class="gap-sm"></div>
+    <p class="t-body">Mas em algum lugar silencioso da vida, alguma parte sua começou a negociar o próprio viver.</p>
+    <div class="gap-sm"></div>
+
+    <div class="prancha prancha-accent">
+      <p class="t-poem">
+        "Quando isso mudar…"<br>
+        "Quando eu for reconhecida…"<br>
+        "Quando aquela resposta chegar…"<br>
+        "Quando eu estiver pronta…"<br><br>
+        <strong>Então eu vivo.</strong><br>
+        <strong>Então eu me permito existir por inteiro.</strong>
+      </p>
+    </div>
+
+    <p class="t-body" style="margin-top:18px">E sem perceber… a vida começa a ser adiada em parcelas pequenas.</p>
+
+    <div class="divider"><div class="div-line"></div><div class="div-ornament">◆</div><div class="div-line"></div></div>
+
+    <div class="pausa">
+      <p class="t-editorial">Respire antes de continuar.<br>Não responda rápido.<br><em>Observe.</em></p>
+    </div>
+
+    <div class="gap-sm"></div>
+    <p class="t-body" style="margin-bottom:6px">Em quais áreas da sua vida existe uma sensação de: <em>"ainda não posso viver plenamente aqui."</em></p>
+
+    <div class="check-grid" id="espera-checks">
+      <div class="check-item" onclick="toggleCheck(this)"><div class="cb"></div><span>relacionamento</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="cb"></div><span>propósito</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="cb"></div><span>ministério</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="cb"></div><span>carreira</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="cb"></div><span>identidade</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="cb"></div><span>dinheiro</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="cb"></div><span>reconhecimento</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="cb"></div><span>validação</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="cb"></div><span>cura emocional</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="cb"></div><span>decisão importante</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="cb"></div><span>outro</span></div>
+    </div>
+
+    <div class="insight" id="insight-espera">
+      <p class="t-editorial">O problema nunca foi falta de esforço.<br><em>Existe uma parte sua esperando autorização para viver.</em></p>
+    </div>
+
+    <div class="journal-wrap">
+      <p class="j-label">journaling</p>
+      <p class="j-prompt">"Quando __________________ acontecer…<br>então eu finalmente vou me permitir __________________."</p>
+      <textarea class="j-input" id="j-espera" placeholder="Escreva aqui, livremente…" oninput="sj(this)"></textarea>
+    </div>
+
+    <div class="gap"></div>
+    <div class="prancha prancha-accent">
+      <p class="t-poem">A espera emocional não constrói apenas silêncio.<br>Ela constrói estruturas.<br><br>E sem perceber…<br>você começa a construir uma arquitetura inteira…<br><em>para sobreviver.</em></p>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-ghost" onclick="goTo(2)">← retornar</button>
+      <button class="btn-main" onclick="goTo(4)">avançar pela casa →</button>
+    </div>
+    <div class="footer">© 2024 Irene Almeida · Tradutora de Valor · Todos os direitos reservados</div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     SCREEN 4 — MÓDULO 2: ARQUITETURA
+════════════════════════════════════════════════ -->
+<div class="screen" id="screen-4">
+  <div class="container">
+    <div class="sec-label">módulo 02 · arquitetura da sobrevivência</div>
+    <p class="t-overline">Sala II</p>
+    <h2 class="t-headline">Arquitetura da<br><em>Sobrevivência</em></h2>
+    <div class="gap-sm"></div>
+
+    <div class="prancha">
+      <div class="prancha-num">02</div>
+      <p class="t-poem">
+        Existe uma coisa importante sobre esperar emocionalmente por tempo demais:<br><br>
+        isso não nos deixa <strong>intactas</strong>.<br><br>
+        Porque a espera adapta. Reorganiza. Constrói. Consome recursos.<br><br>
+        Paralisa recursos importantes da vida:<br>
+        criatividade · tempo · clareza · dinheiro · energia · movimento.
+      </p>
+    </div>
+
+    <div class="gap-sm"></div>
+    <div class="prancha prancha-dark">
+      <p class="t-editorial" style="margin-bottom:14px">Algumas estruturas começam como forma de proteção.</p>
+      <p class="t-editorial">Mas, com o tempo… podem começar a <strong style="color:var(--terra-glow)">governar a casa inteira</strong>.</p>
+    </div>
+
+    <div class="gap-sm"></div>
+    <p class="t-body">Em algum momento… sobrevivência começa a parecer personalidade.</p>
+    <div class="gap-sm"></div>
+
+    <div class="prancha prancha-accent">
+      <p class="t-poem">
+        Sobrevivência nem sempre parece sobrevivência.<br>
+        Às vezes ela está disfarçada de:<br><br>
+        força · maturidade · proatividade · controle · disponibilidade constante<br><br>
+        <em>"eu dou conta." · "eu resolvo." · "eu sustento." · "deixa comigo."</em>
+      </p>
+    </div>
+
+    <div class="divider"><div class="div-line"></div><div class="div-ornament">◆</div><div class="div-line"></div></div>
+
+    <p class="t-body" style="margin-bottom:6px">Quais estruturas você reconhece hoje?</p>
+
+    <div class="check-grid" id="estruturas-checks">
+      <div class="check-item" data-val="controle" onclick="toggleCheck(this)"><div class="cb"></div><span>controle</span></div>
+      <div class="check-item" data-val="hiperres" onclick="toggleCheck(this)"><div class="cb"></div><span>hiperresponsabilidade</span></div>
+      <div class="check-item" data-val="perfec" onclick="toggleCheck(this)"><div class="cb"></div><span>perfeccionismo</span></div>
+      <div class="check-item" data-val="autoaban" onclick="toggleCheck(this)"><div class="cb"></div><span>autoabandono</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="cb"></div><span>hiperprodutividade</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="cb"></div><span>indisponibilidade emocional</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="cb"></div><span>necessidade de validação</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="cb"></div><span>dificuldade em pedir ajuda</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="cb"></div><span>salvar pessoas</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="cb"></div><span>medo de decepcionar</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="cb"></div><span>outro</span></div>
+    </div>
+
+    <div class="insight" id="insight-ch">
+      <p class="t-editorial">Sua sobrevivente aprendeu cedo que <em>relaxar nunca foi completamente seguro</em>.<br><br>Ficar alerta. Resolver. Antecipar. Sustentar. Pareciam caminhos mais seguros do que confiar que alguém dividiria o peso com você.</p>
+    </div>
+    <div class="insight" id="insight-aa">
+      <p class="t-editorial">Algumas partes nossas aprendem a cuidar tão bem de tudo…<br><em>que deixam de perceber quando deixaram de cuidar de si.</em></p>
+    </div>
+
+    <div class="journal-wrap">
+      <p class="j-label">journaling</p>
+      <p class="j-prompt">O que em mim começou como proteção…<br>mas hoje funciona como <em>prisão</em>?</p>
+      <textarea class="j-input" id="j-estruturas" placeholder="Escreva aqui, livremente…" oninput="sj(this)"></textarea>
+    </div>
+
+    <div class="journal-wrap">
+      <p class="j-label">pergunta profunda</p>
+      <p class="j-prompt">Qual dessas estruturas mais se parece com uma antiga tentativa de permanecer segura?</p>
+      <textarea class="j-input" id="j-estruturas2" placeholder="Escreva aqui, livremente…" oninput="sj(this)"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-ghost" onclick="goTo(3)">← retornar à sala anterior</button>
+      <button class="btn-main" onclick="goTo(5)">avançar pela casa →</button>
+    </div>
+    <div class="footer">© 2024 Irene Almeida · Tradutora de Valor · Todos os direitos reservados</div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     SCREEN 5 — MÓDULO 3: ARMADURA
+════════════════════════════════════════════════ -->
+<div class="screen" id="screen-5">
+  <div class="container">
+    <div class="sec-label">módulo 03 · armadura da sobrevivente</div>
+    <p class="t-overline">Sala III</p>
+    <h2 class="t-headline">A Armadura da<br><em>Sobrevivente</em></h2>
+    <div class="gap-sm"></div>
+
+    <div class="prancha prancha-dark">
+      <div class="prancha-num" style="color:rgba(255,255,255,0.04)">03</div>
+      <p class="t-poem">
+        Nenhuma mulher acorda um dia e decide conscientemente vestir uma armadura.<br><br>
+        Armaduras são <strong style="font-style:normal;color:var(--terra-glow)">forjadas</strong>.<br><br>
+        Muitas vezes, na necessidade. Na dor. Na insegurança.<br>No trauma. No abandono.<br><br>
+        E sem perceber…<br>
+        o que começou como adaptação<br>
+        vira <strong style="font-style:normal;color:var(--terra-glow)">identidade</strong>.
+      </p>
+    </div>
+
+    <div class="gap-sm"></div>
+    <div class="prancha prancha-accent">
+      <p class="t-poem">
+        A armadura raramente parece armadura.<br>
+        Ela geralmente se disfarça de:<br><br>
+        competência · força · maturidade · autossuficiência<br><br>
+        <em>"Eu dou conta." · "Eu fico bem." · "Está tudo sob controle."</em>
+      </p>
+    </div>
+
+    <div class="divider"><div class="div-line"></div><div class="div-ornament">◆</div><div class="div-line"></div></div>
+    <p class="t-body" style="margin-bottom:6px;font-size:12px;color:var(--ink-soft)">Toque para expandir cada peça e refletir</p>
+
+    <div class="armor-grid" id="armor-grid">
+
+      <div class="armor-piece" onclick="toggleArmor(this)" data-key="escudo">
+        <div class="armor-icon-wrap">🛡</div>
+        <div class="armor-piece-name">Escudo do Controle</div>
+        <div class="armor-piece-teaser">Prever, organizar, sustentar. Manter tudo sob controle.</div>
+        <div class="armor-expand">
+          <p class="t-body" style="color:rgba(246,241,234,0.7);margin-bottom:10px;font-size:13px;">Você aprendeu que controlar parecia mais seguro do que lidar com o inesperado.</p>
+          <p class="armor-reflection">O que em você tenta controlar porque ainda não se sente segura para confiar?</p>
+          <textarea class="j-input" style="margin-top:8px;min-height:65px;background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.12);color:#F6F1EA;background-image:none;padding-left:16px" placeholder="Reflexão…" id="ar-escudo" oninput="sj(this)"></textarea>
+        </div>
+      </div>
+
+      <div class="armor-piece" onclick="toggleArmor(this)" data-key="espada">
+        <div class="armor-icon-wrap">⚔️</div>
+        <div class="armor-piece-name">Espada da Hiperresponsabilidade</div>
+        <div class="armor-piece-teaser">Você assume. Resolve. Carrega. Antecipa. Sustenta.</div>
+        <div class="armor-expand">
+          <p class="t-body" style="color:rgba(246,241,234,0.7);margin-bottom:8px;font-size:13px;">Você se sente culpada grande parte do tempo, mas chama isso de empatia.</p>
+          <p class="armor-reflection">O que você continua carregando que nunca foi sua responsabilidade?</p>
+          <textarea class="j-input" style="margin-top:8px;min-height:65px;background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.12);color:#F6F1EA;background-image:none;padding-left:16px" placeholder="Reflexão…" id="ar-espada" oninput="sj(this)"></textarea>
+        </div>
+      </div>
+
+      <div class="armor-piece" onclick="toggleArmor(this)" data-key="mascara">
+        <div class="armor-icon-wrap">🎭</div>
+        <div class="armor-piece-name">Máscara da Força</div>
+        <div class="armor-piece-teaser">Permanecer funcional. Mesmo cansada. Mesmo ferida.</div>
+        <div class="armor-expand">
+          <p class="t-body" style="color:rgba(246,241,234,0.7);margin-bottom:10px;font-size:13px;">Mesmo precisando. Mesmo sangrando. A força como parede entre você e o que precisa ser visto.</p>
+          <p class="armor-reflection">O que sua força protege? Qual o ganho inconsciente de continuar parecendo forte?</p>
+          <textarea class="j-input" style="margin-top:8px;min-height:65px;background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.12);color:#F6F1EA;background-image:none;padding-left:16px" placeholder="Reflexão…" id="ar-mascara" oninput="sj(this)"></textarea>
+        </div>
+      </div>
+
+      <div class="armor-piece" onclick="toggleArmor(this)" data-key="courace">
+        <div class="armor-icon-wrap">✨</div>
+        <div class="armor-piece-name">Couraça da Performance</div>
+        <div class="armor-piece-teaser">Produzir valor. Entregar. Render. Performar. Servir.</div>
+        <div class="armor-expand">
+          <p class="t-body" style="color:rgba(246,241,234,0.7);margin-bottom:10px;font-size:13px;">Porque existir nunca pareceu suficiente por si só. Sempre parecia faltar algo.</p>
+          <p class="armor-reflection">Quem você precisa ser para merecer descanso, amor, pertencimento ou aprovação?</p>
+          <textarea class="j-input" style="margin-top:8px;min-height:65px;background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.12);color:#F6F1EA;background-image:none;padding-left:16px" placeholder="Reflexão…" id="ar-courace" oninput="sj(this)"></textarea>
+        </div>
+      </div>
+
+      <div class="armor-piece" onclick="toggleArmor(this)" data-key="capacete">
+        <div class="armor-icon-wrap">⚡</div>
+        <div class="armor-piece-name">Capacete da Vigilância</div>
+        <div class="armor-piece-teaser">Mente monitorando cenários. Fazendo cálculos. Antecipando riscos.</div>
+        <div class="armor-expand">
+          <p class="t-body" style="color:rgba(246,241,234,0.7);margin-bottom:10px;font-size:13px;">Imaginando o que o outro dirá antes mesmo de falar. Tentando evitar a dor antes dela acontecer.</p>
+          <p class="armor-reflection">Seu corpo conhece descanso ou apenas pausas estratégicas entre alertas?</p>
+          <textarea class="j-input" style="margin-top:8px;min-height:65px;background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.12);color:#F6F1EA;background-image:none;padding-left:16px" placeholder="Reflexão…" id="ar-capacete" oninput="sj(this)"></textarea>
+        </div>
+      </div>
+
+      <div class="armor-piece" onclick="toggleArmor(this)" data-key="cinto">
+        <div class="armor-icon-wrap">🔒</div>
+        <div class="armor-piece-name">Cinto da Autossuficiência</div>
+        <div class="armor-piece-teaser">Depender pouco. Precisar pouco. Não incomodar. Não ser demais.</div>
+        <div class="armor-expand">
+          <p class="t-body" style="color:rgba(246,241,234,0.7);margin-bottom:10px;font-size:13px;">Ser sempre quietinha. Sempre perfeita. Sempre "fácil" de lidar.</p>
+          <p class="armor-reflection">Quando foi que precisar começou a parecer perigoso?</p>
+          <textarea class="j-input" style="margin-top:8px;min-height:65px;background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.12);color:#F6F1EA;background-image:none;padding-left:16px" placeholder="Reflexão…" id="ar-cinto" oninput="sj(this)"></textarea>
+        </div>
+      </div>
+
+    </div><!-- /armor-grid -->
+
+    <div class="insight" id="insight-armadura">
+      <p class="t-editorial">Você não construiu essas estruturas porque é fraca.<br><br>Elas foram construídas porque, em algum momento, se fizeram <em>necessárias</em>.<br><br>Mas armaduras feitas para proteger também limitam movimento, intimidade, leveza e descanso.</p>
+    </div>
+
+    <div class="journal-wrap">
+      <p class="j-label">journaling</p>
+      <p class="j-prompt">Minha armadura me protege de quê?</p>
+      <textarea class="j-input" id="j-armadura" placeholder="Escreva aqui, livremente…" oninput="sj(this)"></textarea>
+    </div>
+
+    <div class="gap"></div>
+    <div class="prancha prancha-terra">
+      <p class="t-poem">A sobrevivente não constrói apenas estratégias.<br>Ela comunica através de linguagens protetivas.<br><br><strong>Seu corpo fala, minha querida.</strong><br><br>E muitas vezes ele diz aquilo que a consciência ainda não aprendeu a nomear.</p>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-ghost" onclick="goTo(4)">← retornar à sala anterior</button>
+      <button class="btn-main" onclick="goTo(6)">avançar pela casa →</button>
+    </div>
+    <div class="footer">© 2024 Irene Almeida · Tradutora de Valor · Todos os direitos reservados</div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     SCREEN 6 — MÓDULO 4: CORPO
+════════════════════════════════════════════════ -->
+<div class="screen" id="screen-6">
+  <div class="container">
+    <div class="sec-label">módulo 04 · o corpo como painel</div>
+    <p class="t-overline">Sala IV</p>
+    <h2 class="t-headline">O Corpo<br>como <em>Painel</em></h2>
+    <div class="gap-sm"></div>
+
+    <div class="prancha prancha-dark">
+      <div class="prancha-num" style="color:rgba(255,255,255,0.04)">04</div>
+      <p class="t-poem">
+        Seu corpo fala, mulher.<br><br>
+        Mesmo quando você tenta racionalizar. Espiritualizar. Minimizar.<br><br>
+        Ele não é seu inimigo. Não está exagerando.<br>
+        Ele está funcionando como <strong style="color:var(--terra-glow);font-style:normal">painel</strong> · como <strong style="color:var(--terra-glow);font-style:normal">linguagem</strong> · como <strong style="color:var(--terra-glow);font-style:normal">sinalização</strong>.
+      </p>
+    </div>
+
+    <div class="gap-sm"></div>
+    <p class="t-body">E muitas vezes… o corpo está dizendo aquilo que a consciência ainda não aprendeu a dar nome.</p>
+
+    <div class="divider"><div class="div-line"></div><div class="div-ornament">◆</div><div class="div-line"></div></div>
+    <p class="t-body" style="margin-bottom:18px;font-size:12px;color:var(--ink-soft)">Selecione as regiões onde você sente ressonância</p>
+
+    <div class="body-map-wrap">
+      <!-- Silhueta editorial anatômica minimalista premium -->
+      <div class="body-figure" id="bodyFigure">
+        <svg viewBox="0 0 90 245" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Fundo suave da figura -->
+          <ellipse cx="45" cy="22" rx="15" ry="17" fill="rgba(45,65,86,0.04)"/>
+          <path d="M27 45 Q21 58 21 88 Q21 112 27 118 L29 142 L61 142 L63 118 Q69 112 69 88 Q69 58 63 45 Z" fill="rgba(45,65,86,0.04)"/>
+
+          <!-- Cabeça — contorno elegante -->
+          <ellipse cx="45" cy="22" rx="15" ry="17" stroke="#8BA0B4" stroke-width="1.4" stroke-linecap="round"/>
+          <!-- Detalhe facial — linha de expressão -->
+          <line x1="38" y1="20" x2="52" y2="20" stroke="#8BA0B4" stroke-width="0.6" opacity="0.4"/>
+          <line x1="41" y1="24" x2="49" y2="24" stroke="#8BA0B4" stroke-width="0.6" opacity="0.3"/>
+
+          <!-- Pescoço -->
+          <path d="M40 37 L40 46 M50 37 L50 46" stroke="#8BA0B4" stroke-width="1.1" stroke-linecap="round"/>
+
+          <!-- Torso — curvas femininas elegantes -->
+          <path d="M27 45 Q21 58 21 88 Q21 112 27 118 L29 142 L61 142 L63 118 Q69 112 69 88 Q69 58 63 45 Z" stroke="#8BA0B4" stroke-width="1.4" stroke-linejoin="round"/>
+
+          <!-- Ombros -->
+          <path d="M27 48 Q18 54 16 62" stroke="#8BA0B4" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+          <path d="M63 48 Q72 54 74 62" stroke="#8BA0B4" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+
+          <!-- Braços -->
+          <path d="M27 52 Q13 62 11 82 Q10 98 13 108" stroke="#8BA0B4" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M63 52 Q77 62 79 82 Q80 98 77 108" stroke="#8BA0B4" stroke-width="1.2" stroke-linecap="round"/>
+
+          <!-- Mãos — elegante -->
+          <ellipse cx="13" cy="112" rx="5.5" ry="7.5" stroke="#8BA0B4" stroke-width="1" fill="rgba(45,65,86,0.04)"/>
+          <ellipse cx="77" cy="112" rx="5.5" ry="7.5" stroke="#8BA0B4" stroke-width="1" fill="rgba(45,65,86,0.04)"/>
+
+          <!-- Cintura — marcação sutil -->
+          <path d="M29 100 Q45 96 61 100" stroke="#8BA0B4" stroke-width="0.7" opacity="0.4"/>
+
+          <!-- Pernas -->
+          <path d="M29 142 Q27 172 27 202 Q27 218 31 228" stroke="#8BA0B4" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M61 142 Q63 172 63 202 Q63 218 59 228" stroke="#8BA0B4" stroke-width="1.2" stroke-linecap="round"/>
+
+          <!-- Pés -->
+          <ellipse cx="31" cy="232" rx="8.5" ry="5" stroke="#8BA0B4" stroke-width="1" fill="rgba(45,65,86,0.04)"/>
+          <ellipse cx="59" cy="232" rx="8.5" ry="5" stroke="#8BA0B4" stroke-width="1" fill="rgba(45,65,86,0.04)"/>
+
+          <!-- Linha central anatômica — delicada -->
+          <line x1="45" y1="45" x2="45" y2="142" stroke="#8BA0B4" stroke-width="0.5" opacity="0.2" stroke-dasharray="3 4"/>
+
+          <!-- Zonas interativas (invisíveis por padrão) -->
+          <ellipse class="region-fill" id="rfig-cabeca" cx="45" cy="22" rx="15" ry="17" onclick="syncBodyRegion('cabeca')"/>
+          <rect class="region-fill" id="rfig-garganta" x="37" y="35" width="16" height="16" rx="3" onclick="syncBodyRegion('garganta')"/>
+          <ellipse class="region-fill" id="rfig-peito" cx="45" cy="68" rx="19" ry="15" onclick="syncBodyRegion('peito')"/>
+          <ellipse class="region-fill" id="rfig-estomago" cx="45" cy="96" rx="17" ry="13" onclick="syncBodyRegion('estomago')"/>
+          <ellipse class="region-fill" id="rfig-maos" cx="45" cy="110" rx="33" ry="7" onclick="syncBodyRegion('maos')"/>
+          <ellipse class="region-fill" id="rfig-pernas" cx="45" cy="178" rx="19" ry="30" onclick="syncBodyRegion('pernas')"/>
+          <path class="region-fill" id="rfig-pele" d="M27 45 Q21 58 21 88 Q21 112 27 118 L29 142 L61 142 L63 118 Q69 112 69 88 Q69 58 63 45 Z" onclick="syncBodyRegion('pele')"/>
+        </svg>
+      </div>
+
+      <div class="body-list" id="bodyList">
+        <div class="body-region" onclick="toggleBodyRegion(this)" data-region="cabeca">
+          <div class="br-header"><div class="br-dot"></div><div class="br-name">Cabeça</div></div>
+          <div class="br-detail">Pensamentos acelerados · Sobrecarga mental · Ruminação · Cansaço cognitivo<br><em>Sua mente conhece descanso ou apenas pausas rápidas entre monitoramentos?</em></div>
+        </div>
+        <div class="body-region" onclick="toggleBodyRegion(this)" data-region="garganta">
+          <div class="br-header"><div class="br-dot"></div><div class="br-name">Garganta</div></div>
+          <div class="br-detail">Aperto · Nó · Dificuldade de expressar necessidades · Sensação de engolir palavras, emoções, limites<br><em>O que você continua engolindo para manter paz ou pertencimento?</em></div>
+        </div>
+        <div class="body-region" onclick="toggleBodyRegion(this)" data-region="peito">
+          <div class="br-header"><div class="br-dot"></div><div class="br-name">Peito</div></div>
+          <div class="br-detail">Aceleração · Ansiedade · Peso · Pressão · Sensação constante de alerta<br><em>Seu peito está sustentando o quê?</em></div>
+        </div>
+        <div class="body-region" onclick="toggleBodyRegion(this)" data-region="estomago">
+          <div class="br-header"><div class="br-dot"></div><div class="br-name">Estômago</div></div>
+          <div class="br-detail">Ansiedade · Tensão · Contração · Medo antecipatório<br><em>O que você está tentando digerir sozinha há tempo demais?</em></div>
+        </div>
+        <div class="body-region" onclick="toggleBodyRegion(this)" data-region="maos">
+          <div class="br-header"><div class="br-dot"></div><div class="br-name">Mãos</div></div>
+          <div class="br-detail">Roer unhas · Agitação · Inquietação · Necessidade constante de fazer, resolver, controlar<br><em>O que você está tentando controlar que não é sua responsabilidade?</em></div>
+        </div>
+        <div class="body-region" onclick="toggleBodyRegion(this)" data-region="pernas">
+          <div class="br-header"><div class="br-dot"></div><div class="br-name">Pernas</div></div>
+          <div class="br-detail">Cansaço · Peso · Travamento · Sensação de dificuldade de avançar<br><em>Existe alguma área da sua vida cansada de sobreviver?</em></div>
+        </div>
+        <div class="body-region" onclick="toggleBodyRegion(this)" data-region="pele">
+          <div class="br-header"><div class="br-dot"></div><div class="br-name">Pele</div></div>
+          <div class="br-detail">Coceira · Sensibilidade · Vermelhidão · Reatividade · Somatizações<br><em>Em quais situações seu corpo reage quando você não se escolhe?</em></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="insight" id="insight-corpo">
+      <p class="t-editorial">Seu corpo não está exagerando.<br><em>Ele está comunicando.</em><br><br>Você precisa aprender a ouvi-lo. A observá-lo. A olhar para você.</p>
+    </div>
+
+    <div class="journal-wrap">
+      <p class="j-label">journaling</p>
+      <p class="j-prompt">O meu corpo costuma falar quando:</p>
+      <textarea class="j-input" id="j-corpo" placeholder="Escreva aqui, livremente…" oninput="sj(this)"></textarea>
+    </div>
+
+    <div class="journal-wrap">
+      <p class="j-label">exercício profundo</p>
+      <p class="j-prompt">Existe algum padrão corporal recorrente que acompanha certas pessoas, ambientes, decisões ou responsabilidades?</p>
+      <textarea class="j-input" id="j-corpo2" placeholder="Escreva aqui, livremente…" oninput="sj(this)"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-ghost" onclick="goTo(5)">← retornar à sala anterior</button>
+      <button class="btn-main" onclick="goTo(7)">avançar pela casa →</button>
+    </div>
+    <div class="footer">© 2024 Irene Almeida · Tradutora de Valor · Todos os direitos reservados</div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     SCREEN 7 — MÓDULO 5: MESA INTERNA
+════════════════════════════════════════════════ -->
+<div class="screen" id="screen-7">
+  <div class="container">
+    <div class="sec-label">módulo 05 · a mesa interna</div>
+    <p class="t-overline">Sala V</p>
+    <h2 class="t-headline">A Mesa<br><em>Interna</em></h2>
+    <div class="gap-sm"></div>
+
+    <div class="prancha prancha-dark">
+      <div class="prancha-num" style="color:rgba(255,255,255,0.04)">05</div>
+      <p class="t-poem">
+        Dentro de cada pessoa existe uma mesa.<br><br>
+        Nessa mesa há lugares — e há versões suas sentadas ali.<br><br>
+        Versões que aprenderam a sobreviver de formas diferentes.<br>
+        Cada uma com uma função.<br>
+        Cada uma com uma voz.<br><br>
+        A questão não é silenciá-las.<br>
+        É <strong style="color:var(--terra-glow);font-style:normal">entender quem está ocupando o centro</strong>.
+      </p>
+    </div>
+
+    <div class="gap-sm"></div>
+
+    <div class="mesa-scene">
+      <div class="mesa-pool-label">versões disponíveis — arraste para a mesa</div>
+      <div class="mesa-pool" id="mesaPool">
+        <div class="mesa-chip" onclick="chipClick(this, 'a pequena ferida')">a pequena ferida</div>
+        <div class="mesa-chip" onclick="chipClick(this, 'a guerreira')">a guerreira</div>
+        <div class="mesa-chip" onclick="chipClick(this, 'a provedora')">a provedora</div>
+        <div class="mesa-chip" onclick="chipClick(this, 'a cuidadora')">a cuidadora</div>
+        <div class="mesa-chip" onclick="chipClick(this, 'a perfeccionista')">a perfeccionista</div>
+        <div class="mesa-chip" onclick="chipClick(this, 'a controladora')">a controladora</div>
+        <div class="mesa-chip" onclick="chipClick(this, 'a sedutora')">a sedutora</div>
+        <div class="mesa-chip" onclick="chipClick(this, 'a invisível')">a invisível</div>
+        <div class="mesa-chip" onclick="chipClick(this, 'a espiritual')">a espiritual</div>
+        <div class="mesa-chip" onclick="chipClick(this, 'a forte')">a forte</div>
+        <div class="mesa-chip" onclick="chipClick(this, 'a que desiste')">a que desiste</div>
+        <div class="mesa-chip" onclick="chipClick(this, 'a curiosa')">a curiosa</div>
+      </div>
+
+      <div class="mesa-grid">
+        <div class="mesa-zone zone-center">
+          <div class="mz-label">centro da mesa — quem governa?</div>
+          <div class="placed-chips" id="zone-center"></div>
+        </div>
+        <div class="mesa-zone">
+          <div class="mz-label">laterais — presença frequente</div>
+          <div class="placed-chips" id="zone-laterais"></div>
+        </div>
+        <div class="mesa-zone">
+          <div class="mz-label">atrás — versão guardada</div>
+          <div class="placed-chips" id="zone-atras"></div>
+        </div>
+        <div class="mesa-zone">
+          <div class="mz-label">fora da mesa — silenciada</div>
+          <div class="placed-chips" id="zone-fora"></div>
+        </div>
+      </div>
+    </div><!-- /mesa-scene -->
+
+    <div class="insight" id="insight-mesa">
+      <p class="t-editorial">A versão que governa sua mesa não foi escolhida conscientemente.<br><br>Ela foi <em>necessária</em>. E ficou.<br><br>Hoje é possível perguntar: ainda preciso dela no centro?</p>
+    </div>
+
+    <div class="journal-wrap">
+      <p class="j-label">journaling</p>
+      <p class="j-prompt">Qual versão sua mais precisa de espaço, voz e cuidado hoje?</p>
+      <textarea class="j-input" id="j-mesa" placeholder="Escreva aqui, livremente…" oninput="sj(this)"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-ghost" onclick="goTo(6)">← retornar à sala anterior</button>
+      <button class="btn-main" onclick="goTo(8)">avançar pela casa →</button>
+    </div>
+    <div class="footer">© 2024 Irene Almeida · Tradutora de Valor · Todos os direitos reservados</div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     SCREEN 8 — TELA FINAL: SE ESCOLHER
+════════════════════════════════════════════════ -->
+<div class="screen" id="screen-8">
+
+  <div class="final-hero">
+    <div class="final-hero-eyebrow">Irene Almeida · Tradutora de Valor</div>
+    <h2 class="final-hero-title">
+      Você atravessou<br>
+      <em>a casa inteira</em>
+    </h2>
+    <p class="final-hero-sub">Da Estação da Espera<br>ao Se Escolher</p>
+    <div class="final-ornament"><div class="final-ornament-inner"></div></div>
+  </div>
+
+  <div class="container">
+    <div class="gap"></div>
+
+    <div class="prancha prancha-terra">
+      <p class="t-poem">
+        Você não veio até aqui à toa.<br><br>
+        Cada sala que você visitou<br>
+        carregava uma parte da história da sua sobrevivência.<br><br>
+        <strong>E sobrevivência, minha querida, é sabedoria.</strong><br><br>
+        Mas chegou a hora de perguntar:<br>
+        existe vida além da sobrevivência?
+      </p>
+    </div>
+
+    <!-- Resumo dinâmico -->
+    <div class="summary-card" id="sum-espera-card" style="display:none">
+      <div class="sum-tag">espera emocional</div>
+      <div class="sum-pills" id="sum-espera"></div>
+    </div>
+
+    <div class="summary-card" id="sum-estruturas-card" style="display:none">
+      <div class="sum-tag">estruturas reconhecidas</div>
+      <div class="sum-pills" id="sum-estruturas"></div>
+    </div>
+
+    <div class="summary-card" id="sum-armadura-card" style="display:none">
+      <div class="sum-tag">peças da armadura</div>
+      <div class="sum-pills" id="sum-armadura"></div>
+    </div>
+
+    <div class="summary-card" id="sum-corpo-card" style="display:none">
+      <div class="sum-tag">sinais do corpo</div>
+      <div class="sum-pills" id="sum-corpo"></div>
+    </div>
+
+    <div class="gap-sm"></div>
+
+    <div class="prancha prancha-dark" style="text-align:center">
+      <p class="t-editorial" style="color:rgba(246,241,234,0.94)">
+        Se escolher não é um evento.<br><br>
+        É uma prática.<br><br>
+        <em>É acordar amanhã e decidir, mais uma vez:</em><br><br>
+        <strong style="color:var(--terra-glow)">eu importo.<br>minha vida importa.<br>minha presença importa.</strong>
+      </p>
+    </div>
+
+    <div class="gap-sm"></div>
+
+    <div class="prancha">
+      <p class="sum-quote">
+        "Arquitetura da Sobrevivência Experience"<br>
+        nasceu das salas internas que precisei aprender a visitar.<br><br>
+        Espero que estas salas também tenham revelado algo em você.
+      </p>
+      <div style="margin-top:20px;display:flex;align-items:center;gap:14px">
+        <div style="flex:1;height:1px;background:var(--line-warm)"></div>
+        <span style="font-family:'Cormorant Garamond',serif;font-size:13px;color:var(--terra);letter-spacing:0.06em;font-style:italic">Irene Almeida · Tradutora de Valor</span>
+        <div style="flex:1;height:1px;background:var(--line-warm)"></div>
+      </div>
+    </div>
+
+    <div class="journal-wrap">
+      <p class="j-label">intenção de encerramento</p>
+      <p class="j-prompt">O que eu quero começar a escolher para mim a partir de hoje?</p>
+      <textarea class="j-input" id="j-final" placeholder="Escreva aqui, livremente…" oninput="sj(this)"></textarea>
+    </div>
+
+    <div class="gap-sm"></div>
+
+    <div class="prancha prancha-accent">
+      <p class="t-body">Próximo passo: <strong>Design do Coração</strong><br>O trabalho de construir de dentro para fora começa aqui.</p>
+    </div>
+
+    <button class="btn-main btn-blue" onclick="reiniciar()">recomeçar a experiência</button>
+    <div class="btn-row" style="margin-top:4px">
+      <button class="btn-ghost" onclick="goTo(7)">← retornar à sala anterior</button>
+    </div>
+
+    <div class="footer">
+      © 2024 Irene Almeida · Tradutora de Valor · Todos os direitos reservados<br>
+      Este material é de uso pessoal e intransferível.
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     SELETOR DE POSIÇÃO DA MESA
+════════════════════════════════════════════════ -->
+<div id="mesaModal" style="
+  display:none;position:fixed;inset:0;z-index:500;
+  background:rgba(28,26,23,0.65);backdrop-filter:blur(6px);
+  display:none;align-items:center;justify-content:center;padding:20px
+">
+  <div style="
+    background:var(--warm-white);border-radius:2px;padding:32px 24px;
+    max-width:380px;width:100%;box-shadow:var(--shadow-xl);
+    border-top:4px solid var(--terra);position:relative
+  ">
+    <p style="font-family:'Lato',sans-serif;font-size:9px;letter-spacing:0.24em;text-transform:uppercase;color:var(--terra);font-weight:700;margin-bottom:8px">Posicionar na mesa</p>
+    <p id="modalChipName" style="font-family:'Playfair Display',serif;font-size:20px;color:var(--deep-blue);font-weight:600;margin-bottom:22px"></p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <button onclick="placeChip('center')" style="padding:14px;background:var(--deep-blue);color:#F6F1EA;border:none;border-radius:2px;font-family:'Lato',sans-serif;font-size:11px;letter-spacing:0.14em;cursor:pointer;font-weight:700">Centro</button>
+      <button onclick="placeChip('laterais')" style="padding:14px;background:var(--blue-mid);color:#F6F1EA;border:none;border-radius:2px;font-family:'Lato',sans-serif;font-size:11px;letter-spacing:0.14em;cursor:pointer;font-weight:700">Lateral</button>
+      <button onclick="placeChip('atras')" style="padding:14px;background:var(--wood);color:#F6F1EA;border:none;border-radius:2px;font-family:'Lato',sans-serif;font-size:11px;letter-spacing:0.14em;cursor:pointer;font-weight:700">Atrás</button>
+      <button onclick="placeChip('fora')" style="padding:14px;background:var(--ink-soft);color:#F6F1EA;border:none;border-radius:2px;font-family:'Lato',sans-serif;font-size:11px;letter-spacing:0.14em;cursor:pointer;font-weight:700">Fora</button>
+    </div>
+    <button onclick="closeModal()" style="margin-top:16px;width:100%;padding:12px;background:transparent;border:1.5px solid var(--line-warm);border-radius:2px;font-family:'Lato',sans-serif;font-size:10px;letter-spacing:0.18em;color:var(--ink-soft);cursor:pointer;text-transform:uppercase;font-weight:700">cancelar</button>
+  </div>
+</div>
+
+
+<script>
+/* ════════════════════════════════════════════════
+   ESTADO GLOBAL
+════════════════════════════════════════════════ */
+const state = {
+  current: 0,
+  journaling: {},
+  espera: [],
+  estruturas: [],
+  armadura: [],
+  corpo: [],
+  mesa: { center: [], laterais: [], atras: [], fora: [] }
+};
+
+const ROOMS = [
+  { id: 'abertura', label: 'Entrada' },
+  { id: 'bio',      label: 'Criadora' },
+  { id: 'aviso',    label: 'Aviso' },
+  { id: 'sala-i',   label: 'Sala I' },
+  { id: 'sala-ii',  label: 'Sala II' },
+  { id: 'sala-iii', label: 'Sala III' },
+  { id: 'sala-iv',  label: 'Sala IV' },
+  { id: 'sala-v',   label: 'Sala V' },
+  { id: 'final',    label: 'Chegada' }
+];
+
+/* ════════════════════════════════════════════════
+   NAVEGAÇÃO
+════════════════════════════════════════════════ */
+function goTo(n) {
+  const screens = document.querySelectorAll('.screen');
+  screens.forEach(s => s.classList.remove('active'));
+  const target = document.getElementById('screen-' + n);
+  if (target) {
+    target.classList.add('active');
+    state.current = n;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    updateProgress(n);
+    if (n === 8) buildSummary();
+  }
+}
+
+function reiniciar() {
+  goTo(0);
+}
+
+/* ════════════════════════════════════════════════
+   PROGRESS BAR — Planta Arquitetônica
+════════════════════════════════════════════════ */
+function buildNav() {
+  const container = document.getElementById('hpRooms');
+  container.innerHTML = '';
+  ROOMS.forEach((r, i) => {
+    const div = document.createElement('div');
+    div.className = 'hp-room';
+    div.id = 'hp-room-' + i;
+    div.innerHTML = `<div class="hp-node"></div><span class="hp-label">${r.label}</span>`;
+    container.appendChild(div);
+  });
+}
+
+function updateProgress(n) {
+  const total = ROOMS.length - 1;
+  const pct = total > 0 ? (n / total) * 100 : 0;
+  document.getElementById('hpFill').style.width = pct + '%';
+
+  ROOMS.forEach((_, i) => {
+    const room = document.getElementById('hp-room-' + i);
+    if (!room) return;
+    room.classList.remove('done', 'active');
+    if (i < n) room.classList.add('done');
+    if (i === n) room.classList.add('active');
+  });
+}
+
+/* ════════════════════════════════════════════════
+   CHECKBOXES
+════════════════════════════════════════════════ */
+function toggleCheck(el) {
+  el.classList.toggle('selected');
+  // Módulo espera
+  const espeGroup = document.getElementById('espera-checks');
+  if (espeGroup && espeGroup.contains(el)) {
+    state.espera = [...espeGroup.querySelectorAll('.check-item.selected')]
+      .map(e => e.querySelector('span').textContent);
+    const insight = document.getElementById('insight-espera');
+    if (insight && state.espera.length >= 2) insight.classList.add('show');
+  }
+  // Módulo estruturas
+  const strGroup = document.getElementById('estruturas-checks');
+  if (strGroup && strGroup.contains(el)) {
+    state.estruturas = [...strGroup.querySelectorAll('.check-item.selected')]
+      .map(e => e.querySelector('span').textContent);
+    const val = el.dataset.val;
+    if (val === 'controle' || val === 'hiperres') {
+      document.getElementById('insight-ch')?.classList.add('show');
+    }
+    if (val === 'autoaban') {
+      document.getElementById('insight-aa')?.classList.add('show');
+    }
+  }
+}
+
+/* ════════════════════════════════════════════════
+   ARMADURA
+════════════════════════════════════════════════ */
+function toggleArmor(el) {
+  const wasSelected = el.classList.contains('selected');
+  // Fechar todos
+  document.querySelectorAll('.armor-piece').forEach(p => p.classList.remove('selected'));
+  // Abrir clicado (toggle)
+  if (!wasSelected) {
+    el.classList.add('selected');
+    state.armadura = [...document.querySelectorAll('.armor-piece.selected')]
+      .map(e => e.querySelector('.armor-piece-name').textContent);
+    if (state.armadura.length >= 1) {
+      document.getElementById('insight-armadura')?.classList.add('show');
+    }
+  }
+}
+
+/* ════════════════════════════════════════════════
+   MAPA CORPORAL
+════════════════════════════════════════════════ */
+function toggleBodyRegion(el) {
+  el.classList.toggle('active');
+  const region = el.dataset.region;
+  const figEl = document.getElementById('rfig-' + region);
+  if (figEl) figEl.classList.toggle('lit', el.classList.contains('active'));
+
+  state.corpo = [...document.querySelectorAll('.body-region.active')]
+    .map(e => e.dataset.region);
+
+  if (state.corpo.length >= 2) {
+    document.getElementById('insight-corpo')?.classList.add('show');
+  }
+}
+
+function syncBodyRegion(region) {
+  const listEl = document.querySelector(`.body-region[data-region="${region}"]`);
+  if (listEl) toggleBodyRegion(listEl);
+}
+
+/* ════════════════════════════════════════════════
+   MESA INTERNA
+════════════════════════════════════════════════ */
+let pendingChip = null;
+let pendingChipEl = null;
+
+function chipClick(el, name) {
+  if (el.classList.contains('used')) return;
+  pendingChip = name;
+  pendingChipEl = el;
+  document.getElementById('modalChipName').textContent = name;
+  document.getElementById('mesaModal').style.display = 'flex';
+}
+
+function placeChip(zone) {
+  if (!pendingChip) return;
+  const colorMap = { center: 'c-center', laterais: 'c-laterais', atras: 'c-atras', fora: 'c-fora' };
+  const zoneEl = document.getElementById('zone-' + zone);
+  if (!zoneEl) return;
+
+  const chip = document.createElement('div');
+  chip.className = 'placed-chip ' + colorMap[zone];
+  chip.innerHTML = `${pendingChip} <span class="remove" onclick="removeChip(this,'${zone}','${pendingChip}')">✕</span>`;
+  zoneEl.appendChild(chip);
+
+  if (pendingChipEl) pendingChipEl.classList.add('used');
+
+  state.mesa[zone === 'center' ? 'center' : zone].push(pendingChip);
+  pendingChip = null;
+  pendingChipEl = null;
+  closeModal();
+
+  if (Object.values(state.mesa).flat().length >= 3) {
+    document.getElementById('insight-mesa')?.classList.add('show');
+  }
+}
+
+function removeChip(removeBtn, zone, name) {
+  removeBtn.parentElement.remove();
+  const zoneKey = zone === 'center' ? 'center' : zone;
+  state.mesa[zoneKey] = state.mesa[zoneKey].filter(n => n !== name);
+  // Reabilitar chip original
+  document.querySelectorAll('.mesa-chip').forEach(ch => {
+    if (ch.textContent.trim() === name) ch.classList.remove('used');
+  });
+}
+
+function closeModal() {
+  document.getElementById('mesaModal').style.display = 'none';
+  pendingChip = null;
+  pendingChipEl = null;
+}
+
+/* ════════════════════════════════════════════════
+   RESUMO FINAL
+════════════════════════════════════════════════ */
+function buildSummary() {
+  renderSumSection('sum-espera', 'sum-espera-card', state.espera);
+  renderSumSection('sum-estruturas', 'sum-estruturas-card', state.estruturas);
+  renderSumSection('sum-armadura', 'sum-armadura-card', state.armadura);
+  renderSumSection('sum-corpo', 'sum-corpo-card', state.corpo);
+}
+
+function renderSumSection(pillsId, cardId, items) {
+  const card = document.getElementById(cardId);
+  const pillsEl = document.getElementById(pillsId);
+  if (!card || !pillsEl || !items || items.length === 0) return;
+  pillsEl.innerHTML = items.map(i => `<span class="sum-pill">${i}</span>`).join('');
+  card.style.display = 'block';
+}
+
+/* ════════════════════════════════════════════════
+   JOURNALING — persistência leve
+════════════════════════════════════════════════ */
+function sj(el) {
+  state.journaling[el.id] = el.value;
+  try { localStorage.setItem('ads-journal', JSON.stringify(state.journaling)); } catch(e) {}
+}
+
+function loadJournaling() {
+  try {
+    const saved = localStorage.getItem('ads-journal');
+    if (!saved) return;
+    const data = JSON.parse(saved);
+    Object.entries(data).forEach(([id, val]) => {
+      const el = document.getElementById(id);
+      if (el) el.value = val;
+    });
+    Object.assign(state.journaling, data);
+  } catch(e) {}
+}
+
+/* ════════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  buildNav();
+  updateProgress(0);
+  loadJournaling();
+
+  // Fechar modal ao clicar fora
+  document.getElementById('mesaModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+});
+</script>
+</body>
+</html>
